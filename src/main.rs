@@ -1,5 +1,15 @@
 mod maze;
-use maze::{Maze, Edge};
+use maze::{Edge, Maze};
 fn main() {
-    Maze{left: 0, right: 10, top: 0, bottom: 10, edges: vec!(Edge::new((1,1), (2, 1))).into_iter().collect()}.draw();
+    Maze {
+	width: 2,
+	height: 2,
+        edges: vec![Edge::new((0, 0), (0, 1)),
+		    Edge::new((1, 0), (1, 1)),
+		    Edge::new((0, 0), (1, 0)),
+		    Edge::new((0, 1), (1, 1))
+
+	].into_iter().collect(),
+    }
+    .draw();
 }
