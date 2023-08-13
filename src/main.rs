@@ -1,4 +1,5 @@
 mod maze;
+mod union_find;
 use maze::{Edge, Maze};
 fn main() {
     Maze {
