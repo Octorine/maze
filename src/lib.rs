@@ -1,6 +1,8 @@
+mod union_find;
+
 use rand::Rng;
 
-use crate::union_find::{Forest, Tree};
+use union_find::{Forest, Tree};
 use std::collections::HashSet;
 
 // A maze consisting of square cells numbered from 0 to WIDTH - 1 and
