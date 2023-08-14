@@ -1,3 +1,5 @@
+use rand::Rng;
+
 use crate::union_find::{Forest, Tree};
 use std::collections::HashSet;
 
@@ -11,6 +13,11 @@ pub struct Maze {
 }
 
 impl Maze {
+    pub fn new(width: usize, height: usize) -> Maze {
+	Maze {
+	    width, height, edges: HashSet::new()
+	    }
+	}
     pub fn has_edge(&self, p1: Point, p2: Point) -> bool {
         self.edges.contains(&Edge::new(p1, p2)) || self.edges.contains(&Edge::new(p2, p1))
     }
@@ -27,7 +34,7 @@ impl Maze {
         }
         println!("+");
         // For each row
-        for j in 0..height - 1{
+        for j in 0..height - 1 {
             // Draw the vertical bars.  One at the beginning, one at
             // the end, and one wherever there's an edge between
             // neighboring cells.
@@ -61,21 +68,21 @@ impl Maze {
             }
             println!("|");
         }
-	// Draw the verttical bars for the bottom row, but no
-	// horizontal bars underneath.
-	            print!("|");
-            for i in 0..width - 1 {
-                print!(" ");
-                if self.has_edge((i, height - 1), (i + 1, height - 1)) {
-                    print!("|");
-                } else {
-                    print!(" ")
-                }
+        // Draw the verttical bars for the bottom row, but no
+        // horizontal bars underneath.
+        print!("|");
+        for i in 0..width - 1 {
+            print!(" ");
+            if self.has_edge((i, height - 1), (i + 1, height - 1)) {
+                print!("|");
+            } else {
+                print!(" ")
             }
-            if width > 0 {
-                print!(" ");
-            }
-            println!("|");
+        }
+        if width > 0 {
+            print!(" ");
+        }
+        println!("|");
         // Draw the bottom row
         print!("+");
         for _ in 0..width - 1 {
@@ -91,14 +98,37 @@ impl Maze {
             count: (self.width - self.height) as usize,
             forest: vec![],
         };
+        let mut edge_set = vec![];
         let width = self.width;
-        for j in (0..self.height) {
-            for i in (0..self.width) {
+        let height = self.height;
+        for j in 0..self.height {
+            for i in 0..self.width {
                 let tree_num = (width * j + i) as usize;
                 forest.forest.push(Tree {
                     id: tree_num,
                     parent: tree_num,
                 });
+                if i < width - 1 && j < height - 1 {
+                    edge_set.push(Edge::new((i, j), (i + 1, j)));
+                    edge_set.push(Edge::new((i, j), (i, j + 1)));
+                } else if i < width - 1 {
+                    edge_set.push(Edge::new((i, j), (i + 1, j)));
+                } else if j < height - 1 {
+                    edge_set.push(Edge::new((i, j), (i, j + 1)));
+                }
+            }
+        }
+	self.edges = edge_set.clone().into_iter().collect();
+        let mut rng = rand::thread_rng();
+        while forest.distinct_sets() > 1 {
+            let edge = edge_set.swap_remove(rng.gen_range(0..edge_set.len()));
+            let p1 = edge.p1.0 + width * edge.p1.1;
+            let p2 = edge.p2.0 + width * edge.p2.1;
+            assert!(forest.forest[p1].id == p1);
+            assert!(forest.forest[p2].id == p2);
+            if forest.walk(p1) != forest.walk(p2) {
+                self.edges.remove(&edge);
+                forest.union(p1, p2);
             }
         }
     }
