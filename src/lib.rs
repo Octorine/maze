@@ -121,8 +121,8 @@ impl Maze {
         while distinct > 1 {
             let edge_index = rng.gen_range(0..edge_set.len());
             let edge = &edge_set[edge_index];
-            let p1 = edge.p1.1 + width * edge.p1.0;
-            let p2 = edge.p2.1 + width * edge.p2.0;
+            let p1 = edge.p1.0 + width * edge.p1.1;
+            let p2 = edge.p2.0 + width * edge.p2.1;
             if forest.find(p1) != forest.find(p2) {
                 edge_set.remove(edge_index);
                 forest.union(p1, p2);
