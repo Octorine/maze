@@ -15,6 +15,7 @@ pub struct Maze {
 }
 
 impl Maze {
+    /// Create an empty maze with no interior walls.
     pub fn new(width: usize, height: usize) -> Maze {
         Maze {
             width,
@@ -25,6 +26,7 @@ impl Maze {
     pub fn has_edge(&self, p1: Point, p2: Point) -> bool {
         self.edges.contains(&Edge::new(p1, p2)) || self.edges.contains(&Edge::new(p2, p1))
     }
+    /// Output to the console an ascii-art rendition of the maze.
     pub fn draw(&self) {
         let width = self.width;
         let height = self.height;
@@ -72,7 +74,7 @@ impl Maze {
             }
             println!("|");
         }
-        // Draw the verttical bars for the bottom row, but no
+        // Draw the vertical bars for the bottom row, but no
         // horizontal bars underneath.
         print!("|");
         for i in 0..width - 1 {
@@ -97,6 +99,9 @@ impl Maze {
         }
         println!("+");
     }
+    ///  Starting from an empty maze, add interior walls such that
+    ///  every cell is reachable from every other cell but there are
+    ///  no loops.
     pub fn add_walls(&mut self) {
         let mut forest = Forest::new();
         let mut edge_set = vec![];
@@ -140,6 +145,8 @@ pub struct Edge {
     p1: Point,
     p2: Point,
 }
+/// A connection between two adjascent cells in the maze.  If two
+/// cells have an edge between them, they DON'T have a wall.
 impl Edge {
     pub fn new(p1: Point, p2: Point) -> Edge {
         Edge { p1, p2 }

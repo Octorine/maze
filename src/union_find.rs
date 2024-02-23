@@ -1,5 +1,4 @@
-// Representing a forest of trees, numbered 0 .. count.  the id and
-// parent attributes of the Tree struct refer to a tree number.
+// Representing a forest of trees, numbered 0 .. count.  The value in Vec[i] represents the index of the parent of i;
 #[derive(Debug)]
 pub struct Forest {
     pub parents: Vec<usize>,
